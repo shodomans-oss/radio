@@ -9,13 +9,11 @@
             margin: 0;
             padding: 0;
             background-color: #2c3e50;
-            /* 背景設定：置中並留出底部空間 */
+            /* 背景圖置中，且不超過螢幕高度 65% 以免撞到按鈕 */
             background-image: url('背景圖.png');
             background-repeat: no-repeat;
-            background-position: center 30px; /* 距離頂部 30px */
-            /* 關鍵：設定圖片高度最高不超過螢幕的 70%，確保不撞到按鈕 */
-            background-size: contain; 
-            max-height: 100vh;
+            background-position: center 20px;
+            background-size: contain;
             height: 100vh;
             width: 100%;
             display: flex;
@@ -25,31 +23,85 @@
             overflow: hidden;
         }
 
-        .player {
-            margin-bottom: 10vh; /* 使用比例間距，按鈕會乖乖待在下面 */
+        .player-controls {
+            margin-bottom: 50px; /* 按鈕距離底部距離 */
+            display: flex;
+            gap: 20px; /* 兩個按鈕之間的間距 */
             z-index: 10;
         }
 
-        button {
-            background-color: #ff9800;
-            color: white;
+        .btn {
             border: none;
-            padding: 15px 50px;
-            font-size: 24px;
+            padding: 15px 40px;
+            font-size: 22px;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            color: white;
             font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 160px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 播放按鈕：藍色 */
+        .play-btn {
+            background-color: #007bff;
+        }
+        .play-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* 停止按鈕：紅色 */
+        .stop-btn {
+            background-color: #dc3545;
+        }
+        .stop-btn:hover {
+            background-color: #a71d2a;
+        }
+
+        /* 小圖示間距 */
+        .icon {
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
-    <div class="player">
-        <button onclick="document.getElementById('radio').play()">▶ 播放節目</button>
+
+    <div class="player-controls">
+        <button class="btn play-btn" onclick="playRadio()">
+            <span class="icon">▶</span> 播放節目
+        </button>
+        
+        <button class="btn stop-btn" onclick="stopRadio()">
+            <span class="icon">■</span> 停止播放
+        </button>
     </div>
-    <audio id="radio" src="https://fm901fm901.com/live"></audio>
+
+    <audio id="radio" src="https://fm901fm901.com/live" preload="none"></audio>
+
+    <script>
+        var audio = document.getElementById('radio');
+
+        function playRadio() {
+            audio.play();
+        }
+
+        function stopRadio() {
+            audio.pause();
+            audio.currentTime = 0; // 停止並重設時間
+        }
+    </script>
+
 </body>
 </html>
+
 
 
 
