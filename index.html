@@ -1,23 +1,19 @@
-沒問題！我幫你調整了 CSS 語法，讓這張 $728 \times 1000$ 的圖片能夠水平垂直置中，並且使用 contain 模式確保圖片不變形、不被裁切，同時加上了一個深色背景來襯托。請直接複製以下內容，取代你目前的 index.html：HTML<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FM901 合歡山廣播電台</title>
-
     <style>
         body {
             margin: 0;
             padding: 0;
-            /* 設定深灰色背景，避免圖片沒填滿時太刺眼 */
-            background-color: #2c3e50; 
-            /* 設定圖片置中且不重複 */
+            background-color: #2c3e50;
+            /* 設定背景圖，位置稍微偏上 (center 40%) 避開按鈕 */
             background-image: url('背景圖.png');
             background-repeat: no-repeat;
-            background-position: center center;
-            /* 關鍵：使用 contain 確保 728x1000 的比例完整呈現不崩壞 */
+            background-position: center 40%;
             background-size: contain;
-            /* 讓背景固定，不隨捲軸滾動 */
             background-attachment: fixed;
             height: 100vh;
             width: 100%;
@@ -25,25 +21,27 @@
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
         .player {
-            margin-bottom: 50px; /* 調整按鈕與底部的距離 */
+            margin-bottom: 80px;
             width: 100%;
             text-align: center;
+            z-index: 10;
         }
 
         button {
             background-color: #ff9800;
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 15px 45px;
             font-size: 24px;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             transition: transform 0.2s;
+            font-weight: bold;
         }
 
         button:hover {
@@ -52,7 +50,6 @@
         }
     </style>
 </head>
-
 <body>
 
     <div class="player">
@@ -63,6 +60,7 @@
 
 </body>
 </html>
+
 
 
 
