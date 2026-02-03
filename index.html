@@ -16,33 +16,28 @@
             justify-content: center;
             min-height: 100vh;
         }
-
         .main-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
         }
-
         .logo-img {
             max-width: 280px;
             height: auto;
             margin-bottom: 20px;
         }
-
         .station-info {
             font-size: 28px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 10px; /* 縮小與按鈕的距離 */
+            margin-bottom: 10px;
         }
-
         .player-controls {
             display: flex;
             gap: 20px;
-            margin-bottom: 10px; /* 縮小與下方文字的距離 */
+            margin-bottom: 10px;
         }
-
         .btn {
             border: none;
             padding: 10px 35px;
@@ -55,81 +50,89 @@
             align-items: center;
             justify-content: center;
             min-width: 120px;
-            transition: opacity 0.2s;
         }
-
-        .btn:active {
-            opacity: 0.8;
-        }
-
-        .play-btn {
-            background-color: #5cb85c;
-        }
-
-        .stop-btn {
-            background-color: #f05f5f;
-        }
-
-        .icon {
-            margin-right: 8px;
-        }
-
+        .play-btn { background-color: #5cb85c; }
+        .stop-btn { background-color: #f05f5f; }
+        .icon { margin-right: 8px; }
         .viewer-stats {
             font-size: 18px;
             font-weight: bold;
-            color: #00008B; /* 全部使用深藍色 */
+            color: #00008B;
             margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
 
-    <div class="main-content">
-        <img src="背景圖.png" alt="Logo" class="logo-img">
-        
-        <div class="station-info">合歡山廣播電台 FM90.1</div>
-        
-        <div class="player-controls">
-            <button class="btn play-btn" onclick="playRadio()">
-                <span class="icon">▶</span> 播放
-            </button>
-            <button class="btn stop-btn" onclick="stopRadio()">
-                <span class="icon">■</span> 停止
-            </button>
-        </div>
+<div class="main-content">
+    <img src="背景圖.png" alt="Logo" class="logo-img">
+    <div class="station-info">合歡山廣播電台 FM90.1</div>
 
-        <div class="viewer-stats">
-            目前收聽人數：共 <span id="count-number">0</span> 人
-        </div>
+    <div class="player-controls">
+        <button class="btn play-btn" onclick="playRadio()">
+            <span class="icon">▶</span> 播放
+        </button>
+        <button class="btn stop-btn" onclick="stopRadio()">
+            <span class="icon">■</span> 停止
+        </button>
     </div>
 
-    <audio id="radio" src="/live" preload="metadata"></audio>
+    <div class="viewer-stats">
+        線上收聽人數共 <span id="count-number">讀取中...</span> 人
+    </div>
+</div>
 
-    <script>
-        var audio = document.getElementById('radio');
-        var countElement = document.getElementById('count-number');
-        
-        function updateViewers() {
-            var currentCount = Math.floor(Math.random() * (180 - 60 + 1)) + 60;
-            countElement.innerText = currentCount;
-        }
+<audio id="radio" src="/live" preload="none"></audio>
 
-        function playRadio() {
-            audio.play().catch(function(error) {
-                console.log("播放失敗: " + error);
+<script>
+var audio = document.getElementById('radio');
+var countElement = document.getElementById('count-number');
+
+function playRadio() {
+    audio.play().catch(e => console.log("播放失敗:", e));
+}
+
+function stopRadio() {
+    audio.pause();
+}
+
+// ⭐ 讀取 Icecast 真實收聽人數
+function updateListeners() {
+    fetch('/status-json.xsl?nocache=' + new Date().getTime())
+    .then(response => response.json())
+    .then(data => {
+        let sources = data.icestats.source;
+        let listeners = 0;
+
+        if (Array.isArray(sources)) {
+            sources.forEach(src => {
+                if (src.listenurl && src.listenurl.includes('/live')) {
+                    listeners = src.listeners;
+                }
             });
+        } else {
+            if (sources.listenurl && sources.listenurl.includes('/live')) {
+                listeners = sources.listeners;
+            }
         }
 
-        function stopRadio() {
-            audio.pause();
-        }
+        countElement.innerText = listeners;
+    })
+    .catch(err => {
+        console.log("讀取人數失敗", err);
+        countElement.innerText = "0";
+    });
+}
 
-        updateViewers();
-        setInterval(updateViewers, 30000);
-    </script>
+// 🚀 每 5 秒更新一次
+updateListeners();
+setInterval(updateListeners, 5000);
+</script>
 
 </body>
 </html>
+
+
 
 
 
